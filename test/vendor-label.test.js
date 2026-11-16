@@ -41,3 +41,11 @@ test('every label points at a vendor this plugin can draw', () => {
     assert.notEqual(label, vendor, `${vendor} is already its own label; the entry does nothing`);
   }
 });
+
+test('VitaCode YOLO is its own vendor, labelled yolo', () => {
+  // The YOLO build runs VitaCode's TUI, so it shares the manifest but not the
+  // row: its own mark, its own colour and the short label `yolo`.
+  assert.equal(logos.labelFor('vitayolo'), 'yolo');
+  assert.ok(logos.logoFor('vitayolo'), 'vitayolo has a mark');
+  assert.notEqual(logos.logoFor('vitayolo'), logos.logoFor('vitacode'));
+});

@@ -15,14 +15,13 @@ require('../lib/node-version');
 const herdr = require('../lib/herdr');
 
 const config = require('../lib/config');
-const { logoFor, PUA, canonicalVendor } = require('../lib/logos');
+const { logoFor, PUA } = require('../lib/logos');
 
 // A pane may name its vendor through `display_agent` when detection cannot
 // (VitaCode runs under the OpenCode manifest). Same rule as lib/state.js:
-// it only wins when it names a vendor this plugin can draw, and the alias
-// table there lets a short label (`vita`) stand for the vendor it names.
+// it only wins when it names a vendor this plugin can draw.
 function vendorOf(pane) {
-  const declared = canonicalVendor(pane?.display_agent);
+  const declared = typeof pane?.display_agent === 'string' ? pane.display_agent.trim().toLowerCase() : '';
   return declared && declared in PUA ? declared : (pane?.agent ?? null);
 }
 

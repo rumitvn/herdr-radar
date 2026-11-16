@@ -15,7 +15,15 @@ require('../lib/node-version');
 const herdr = require('../lib/herdr');
 
 const config = require('../lib/config');
-const { logoFor } = require('../lib/logos');
+const { logoFor, PUA } = require('../lib/logos');
+
+// A pane may name its vendor through `display_agent` when detection cannot
+// (VitaCode runs under the OpenCode manifest). Same rule as lib/state.js:
+// it only wins when it names a vendor this plugin can draw.
+function vendorOf(pane) {
+  const declared = typeof pane?.display_agent === 'string' ? pane.display_agent.trim().toLowerCase() : '';
+  return declared && declared in PUA ? declared : (pane?.agent ?? null);
+}
 
 const TOKEN = 'harness_logo';
 
@@ -63,10 +71,10 @@ function targets() {
     }
     if (!paneId) return [];
     const live = herdr.pane(paneId);
-    return [{ pane: paneId, agent: live?.agent ?? null }];
+    return [{ pane: paneId, agent: vendorOf(live) }];
   }
 
-  return herdr.panes().map((p) => ({ pane: p.pane_id, agent: p.agent ?? null }));
+  return herdr.panes().map((p) => ({ pane: p.pane_id, agent: vendorOf(p) }));
 }
 
 function main() {
